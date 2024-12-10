@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,15 +13,13 @@ return new class extends Migration
         Schema::create('jadwal_dokter', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('doctor_id'); // Kolom untuk menyimpan id dokter
-            $table->unsignedBigInteger('pasien_id'); // Kolom untuk menyimpan id pasien
-            $table->dateTime('jadwal'); // Kolom untuk menyimpan jadwal dokter
+            $table->string('hari'); // Kolom untuk menyimpan hari (misalnya 'Senin', 'Selasa', dst)
+            $table->time('jam_mulai'); // Kolom untuk menyimpan jam mulai praktek
+            $table->time('jam_selesai'); // Kolom untuk menyimpan jam selesai praktek
             $table->timestamps();
 
             // Menambahkan foreign key untuk doctor_id yang merujuk ke tabel 'dokter'
             $table->foreign('doctor_id')->references('id')->on('dokter')->onDelete('cascade');
-
-            // Menambahkan foreign key untuk pasien_id yang merujuk ke tabel 'pasien'
-            $table->foreign('pasien_id')->references('id')->on('pasien')->onDelete('cascade');
         });
     }
 
