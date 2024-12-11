@@ -8,6 +8,8 @@ class Jadwaldokter extends Model
 {
     use HasFactory;
 
+    protected $table = 'jadwal_dokter';
+
     // Menentukan kolom yang dapat diisi (fillable)
     protected $fillable = [
         'doctor_id',     // Mengacu ke id dokter

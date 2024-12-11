@@ -10,7 +10,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $table = 'users';  // Pastikan tabel ini sesuai
+    protected $table = 'users';
 
     protected $fillable = [
         'name', 'email', 'password',
