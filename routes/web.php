@@ -27,13 +27,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Rute untuk dashboard yang dilindungi oleh middleware auth
 Route::middleware('auth')->get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-// Rute untuk halaman-halaman data pasien, dokter, odata-pasien', [PageController::class, 'dataPasien'])->name('data.pasien');
-Route::middleware('auth')->get('/data-pasien', [PageController::class, 'dataPasien'])->name('data.pasien');
-Route::middleware('auth')->get('/data-dokter', [PageController::class, 'dataDokter'])->name('data.dokter');
-Route::middleware('auth')->get('/jadwal-dokter', [PageController::class, 'jadwalDokter'])->name('jadwal.dokter');
-Route::middleware('auth')->get('/data-obat', [PageController::class, 'dataObat'])->name('data.obat');
-Route::middleware('auth')->get('/history-pasien', [PageController::class, 'historyPasien'])->name('history.pasien');
-
 // Rute untuk resource Dokter
 Route::resource('dokter', DokterController::class);
 
