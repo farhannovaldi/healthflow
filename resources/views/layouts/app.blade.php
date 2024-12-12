@@ -33,7 +33,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#"
+                        <a href="{{ route('dokter.index') }}"
                             class="flex items-center py-2 px-4 rounded hover:bg-indigo-600 transition-colors">
                             <i class="fas fa-user-md mr-3"></i> Data Dokter
                         </a>

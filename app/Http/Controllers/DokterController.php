@@ -6,66 +6,134 @@ use Illuminate\Http\Request;
 
 class DokterController extends Controller
 {
-    // Menampilkan daftar dokter
-    public function index()
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
     {
-        $dokters = Dokter::all();
-        return view('dokter.index', compact('dokters'));
+        if ($request->ajax()) {
+            $query = Dokter::query(); // Menggunakan model Eloquent
+
+            // Pencarian
+            if (!empty($request->search['value'])) {
+                $search = $request->search['value'];
+                $query->where('nama', 'like', "%$search%")
+                    ->orWhere('spesialis', 'like', "%$search%")
+                    ->orWhere('telepon', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%");
+            }
+
+            // Total data sebelum filter
+            $totalData = Dokter::count();
+
+            // Pagination dan sorting
+            $start = $request->start ?? 0;
+            $length = $request->length ?? 10;
+            $columnIndex = $request->order[0]['column'] ?? 0; // Index kolom untuk sorting
+            $columnName = $request->columns[$columnIndex]['data'] ?? 'id'; // Nama kolom untuk sorting
+            $columnSortOrder = $request->order[0]['dir'] ?? 'asc'; // Urutan sorting
+
+            $data = $query
+                ->orderBy($columnName, $columnSortOrder)
+                ->skip($start)
+                ->take($length)
+                ->get();
+
+            return response()->json([
+                'draw' => $request->draw,
+                'recordsTotal' => $totalData,
+                'recordsFiltered' => $query->count(),
+                'data' => $data
+            ]);
+        }
+
+        return view('dokter.index');
     }
 
-    // Menampilkan form untuk membuat dokter baru
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
+        // Tampilkan form untuk menambahkan Dokter baru
         return view('dokter.create');
     }
 
-    // Menyimpan data dokter baru
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        $request->validate([
+        // Validasi data input
+        $validatedData = $request->validate([
             'nama' => 'required|string|max:255',
             'spesialis' => 'required|string|max:255',
+            'telepon' => 'required|string|max:15',
+            'email' => 'required|string',
         ]);
 
-        Dokter::create($request->all());
+        // Simpan data ke database
+        Dokter::create($validatedData);
 
-        return redirect()->route('dokter.index')->with('success', 'Dokter berhasil ditambahkan');
+        // Redirect dengan pesan sukses
+        return redirect()->route('dokter.index')->with('success', 'Dokter berhasil ditambahkan.');
     }
 
-    // Menampilkan detail dokter
-    public function show($id)
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
     {
-        $dokter = Dokter::findOrFail($id);
+        // Ambil data Dokter berdasarkan ID
+        $Dokter = Dokter::findOrFail($id);
+
+        // Tampilkan detail Dokter
         return view('dokter.show', compact('dokter'));
     }
 
-    // Menampilkan form untuk mengedit dokter
-    public function edit($id)
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
     {
-        $dokter = Dokter::findOrFail($id);
+        // Ambil data Dokter berdasarkan ID
+        $Dokter = Dokter::findOrFail($id);
+
+        // Tampilkan form edit
         return view('dokter.edit', compact('dokter'));
     }
 
-    // Memperbarui data dokter
-    public function update(Request $request, $id)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
     {
-        $request->validate([
+        // Validasi data input
+        $validatedData = $request->validate([
             'nama' => 'required|string|max:255',
             'spesialis' => 'required|string|max:255',
+            'telepon' => 'required|string|max:15',
+            'email' => 'required|string',
         ]);
 
-        $dokter = Dokter::findOrFail($id);
-        $dokter->update($request->all());
+        // Cari data Dokter dan perbarui
+        $Dokter = Dokter::findOrFail($id);
+        $Dokter->update($validatedData);
 
-        return redirect()->route('dokter.index')->with('success', 'Dokter berhasil diperbarui');
+        // Redirect dengan pesan sukses
+        return redirect()->route('dokter.index')->with('success', 'Data Dokter berhasil diperbarui.');
     }
 
-    // Menghapus dokter
-    public function destroy($id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
     {
-        $dokter = Dokter::findOrFail($id);
-        $dokter->delete();
+        // Hapus data Dokter
+        $Dokter = Dokter::findOrFail($id);
+        $Dokter->delete();
 
-        return redirect()->route('dokter.index')->with('success', 'Dokter berhasil dihapus');
+        // Redirect dengan pesan sukses
+        return redirect()->route('dokter.index')->with('success', 'Dokter berhasil dihapus.');
     }
 }
