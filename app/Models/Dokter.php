@@ -20,10 +20,11 @@ class Dokter extends Model
         'email',
     ];
 
-    public function jadwal()
+    public function jadwalDokter()
     {
-        return $this->hasMany(Jadwaldokter::class);
+        return $this->hasMany(Jadwaldokter::class, 'dokter_id');
     }
+
 
     public function kunjunganPasien()
     {

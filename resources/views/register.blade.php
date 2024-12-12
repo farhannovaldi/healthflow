@@ -9,17 +9,19 @@
 </head>
 <body class="font-sans antialiased bg-gradient-to-b from-indigo-100 to-blue-200">
 
-    <!-- Header -->
-    <header class="bg-gradient-to-r from-indigo-700 to-blue-800 text-white py-8 shadow-lg">
+    <header class="bg-gradient-to-r from-indigo-700 to-blue-800 text-white py-6 shadow-lg">
         <div class="container mx-auto flex justify-between items-center px-6">
-            <h1 class="text-4xl font-extrabold transform hover:scale-105 transition duration-300">HealthFlow</h1>
-            <nav class="hidden md:flex space-x-8">
-                <a href="/" class="hover:text-blue-300 transition-all">Beranda</a>
-                <a href="/login" class="bg-white text-indigo-700 px-6 py-2 rounded-full font-medium hover:bg-indigo-700 hover:text-white transition-all">Masuk</a>
+            <h1 class="text-3xl sm:text-4xl font-extrabold transform hover:scale-105 transition duration-300">HealthFlow</h1>
+            <nav class="hidden md:flex space-x-6 items-center">
+                <a href="/" class="hover:text-blue-300 transition-all text-lg font-medium">Beranda</a>
+                <a href="/login"
+                    class="bg-white text-indigo-700 px-5 py-2 rounded-full font-medium hover:bg-indigo-700 hover:text-white transition-all text-lg">Masuk</a>
             </nav>
-            <a href="/login" class="md:hidden bg-white text-indigo-700 px-6 py-2 rounded-full font-medium hover:bg-indigo-700 hover:text-white transition-all">Masuk</a>
+            <a href="/login"
+                class="md:hidden bg-white text-indigo-700 px-5 py-2 rounded-full font-medium hover:bg-indigo-700 hover:text-white transition-all">Masuk</a>
         </div>
     </header>
+
 
     <!-- Register Form Section -->
     <section class="flex flex-col items-center justify-center min-h-screen text-center bg-gradient-to-r from-indigo-500 to-blue-600 px-6 py-16">

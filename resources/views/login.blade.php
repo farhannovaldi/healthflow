@@ -11,19 +11,19 @@
 
 <body class="font-sans antialiased bg-gradient-to-b from-indigo-100 to-blue-200">
 
-    <!-- Header -->
-    <header class="bg-gradient-to-r from-indigo-700 to-blue-800 text-white py-8 shadow-lg">
+    <header class="bg-gradient-to-r from-indigo-700 to-blue-800 text-white py-6 shadow-lg">
         <div class="container mx-auto flex justify-between items-center px-6">
-            <h1 class="text-4xl font-extrabold transform hover:scale-105 transition duration-300">HealthFlow</h1>
-            <nav class="hidden md:flex space-x-8">
-                <a href="/" class="hover:text-blue-300 transition-all">Beranda</a>
+            <h1 class="text-3xl sm:text-4xl font-extrabold transform hover:scale-105 transition duration-300">HealthFlow</h1>
+            <nav class="hidden md:flex space-x-6 items-center">
+                <a href="/" class="hover:text-blue-300 transition-all text-lg font-medium">Beranda</a>
                 <a href="/login"
-                    class="bg-white text-indigo-700 px-6 py-2 rounded-full font-medium hover:bg-indigo-700 hover:text-white transition-all">Masuk</a>
+                    class="bg-white text-indigo-700 px-5 py-2 rounded-full font-medium hover:bg-indigo-700 hover:text-white transition-all text-lg">Masuk</a>
             </nav>
             <a href="/login"
-                class="md:hidden bg-white text-indigo-700 px-6 py-2 rounded-full font-medium hover:bg-indigo-700 hover:text-white transition-all">Masuk</a>
+                class="md:hidden bg-white text-indigo-700 px-5 py-2 rounded-full font-medium hover:bg-indigo-700 hover:text-white transition-all">Masuk</a>
         </div>
     </header>
+
 
     <!-- Login Form Section -->
     <section
@@ -36,7 +36,6 @@
         <form action="{{ route('login.process') }}" method="POST"
             class="bg-white p-8 rounded-xl shadow-xl w-full sm:w-96">
             @csrf
-            <!-- Menampilkan pesan kesalahan jika ada -->
             @if ($errors->any())
                 <div class="mb-6">
                     <div class="bg-red-500 text-white p-4 rounded-lg">
@@ -72,7 +71,7 @@
 
         <!-- Daftar Link -->
         <p class="text-white mt-4">Belum punya akun? <a href="/register"
-                class="text-blue-300 font-semibold hover:underline">Daftar di sini</a></p>
+                class="text-blue-300 font-semibold hover:underline hover:text-blue-100 transition">Daftar di sini</a></p>
     </section>
 
     <!-- Footer -->
