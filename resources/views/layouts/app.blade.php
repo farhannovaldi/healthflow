@@ -7,6 +7,33 @@
     <title>@yield('title') - HealthFlow</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2771/2771400.png" type="image/png">
 
+    <style>
+        .tooltip-inner {
+            background-color: #343a40;
+            /* Latar belakang gelap Bootstrap */
+            color: #fff;
+            /* Teks putih */
+            padding: 10px;
+            /* Padding agar lebih luas */
+            border-radius: 5px;
+            /* Sudut tooltip membulat */
+            font-size: 14px;
+            /* Ukuran font */
+            line-height: 1.5;
+            /* Spasi antar baris */
+        }
+
+        .tooltip-inner div {
+            margin-bottom: 5px;
+            /* Memberikan jarak antar baris */
+        }
+
+        .tooltip-inner strong {
+            font-weight: bold;
+            /* Membuat label lebih tebal */
+        }
+    </style>
+
     <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <!-- Font Awesome for icons -->

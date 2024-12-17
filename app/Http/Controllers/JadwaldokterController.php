@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\JadwalDokter;
 use App\Models\Dokter;
+use Carbon\Carbon;
 
 class JadwalDokterController extends Controller
 {
@@ -56,36 +57,63 @@ class JadwalDokterController extends Controller
         $jadwalDokter = JadwalDokter::with('dokter')->findOrFail($id);
         return view('jadwaldokter.show', compact('jadwalDokter'));
     }
-    
-    public function getJadwal()
+
+    public function getJadwal(Request $request)
     {
-        // Mapping nama hari ke tanggal (untuk contoh minggu ini)
-        $hariMap = [
-            'Senin' => now()->startOfWeek()->toDateString(),
-            'Selasa' => now()->startOfWeek()->addDay(1)->toDateString(),
-            'Rabu' => now()->startOfWeek()->addDay(2)->toDateString(),
-            'Kamis' => now()->startOfWeek()->addDay(3)->toDateString(),
-            'Jumat' => now()->startOfWeek()->addDay(4)->toDateString(),
-            'Sabtu' => now()->startOfWeek()->addDay(5)->toDateString(),
-            'Minggu' => now()->startOfWeek()->addDay(6)->toDateString(),
+        $start = $request->query('start'); // Tanggal awal rentang waktu
+        $end = $request->query('end');     // Tanggal akhir rentang waktu
+
+        // Ambil rentang tanggal yang diterima
+        $startDate = Carbon::parse($start);
+        $endDate = Carbon::parse($end);
+
+        // Daftar hari dalam minggu
+        $daysOfWeek = [
+            'Senin' => Carbon::MONDAY,
+            'Selasa' => Carbon::TUESDAY,
+            'Rabu' => Carbon::WEDNESDAY,
+            'Kamis' => Carbon::THURSDAY,
+            'Jumat' => Carbon::FRIDAY,
+            'Sabtu' => Carbon::SATURDAY,
+            'Minggu' => Carbon::SUNDAY
         ];
 
+        // Ambil jadwal dokter
         $jadwal = JadwalDokter::with('dokter')->get();
 
-        $response = $jadwal->map(function ($item) use ($hariMap) {
-            $tanggal = $hariMap[$item->hari] ?? now()->toDateString(); // Pastikan tanggal sesuai hari
+        // Filter jadwal dokter berdasarkan rentang waktu dan hari
+        $events = collect();
 
-            return [
-                'title' => $item->dokter->nama . ' (' . $item->jam_mulai . '-' . $item->jam_selesai . ')',
-                'start' => $tanggal . 'T' . $item->jam_mulai,
-                'end' => $tanggal . 'T' . $item->jam_selesai,
-                'description' => "Dokter: {$item->dokter->nama}\nHari: {$item->hari}\nJam: {$item->jam_mulai} - {$item->jam_selesai}",
-            ];
-        });
+        // Mengulang setiap minggu dalam rentang waktu bulan
+        $startDate->startOfMonth(); // Mulai dari awal bulan
+        $endDate->endOfMonth(); // Sampai akhir bulan
 
-        return response()->json($response);
+        while ($startDate <= $endDate) {
+            foreach ($jadwal as $item) {
+                // Dapatkan tanggal dari hari tertentu dalam minggu
+                $hari = $item->hari;
+                $dayOfWeek = $daysOfWeek[$hari] ?? null;
+
+                if ($dayOfWeek) {
+                    // Tentukan tanggal yang sesuai dengan hari pada minggu itu
+                    $dateForDay = $startDate->copy()->next($dayOfWeek);
+
+                    // Pastikan tanggal jatuh dalam rentang waktu
+                    if ($dateForDay >= $startDate && $dateForDay <= $endDate) {
+                        $events->push([
+                            'title' => $item->dokter->nama,
+                            'start' => $dateForDay->toDateString() . 'T' . $item->jam_mulai,
+                            'end' => $dateForDay->toDateString() . 'T' . $item->jam_selesai,
+                            'description' => $item->dokter->nama . ' (' . $item->dokter->spesialis . ')'
+                        ]);
+                    }
+                }
+            }
+            $startDate->addWeek(); // Pindah ke minggu berikutnya
+        }
+
+        return response()->json($events);
     }
-
 
     /**
      * Show the form for editing the specified resource.

@@ -67,21 +67,44 @@
                     $.ajax({
                         url: '{{ route('jadwaldokter.getJadwal') }}',
                         method: 'GET',
+                        data: {
+                            start: fetchInfo.startStr, // Rentang waktu awal
+                            end: fetchInfo.endStr // Rentang waktu akhir
+                        },
                         success: function(response) {
                             successCallback(response);
                         },
                         error: function() {
+                            console.error('Gagal mengambil data jadwal.');
                             failureCallback();
                         }
                     });
                 },
                 eventDidMount: function(info) {
-                    // Tooltip untuk menampilkan detail dokter
+                    // Membuat konten tooltip dengan informasi hanya jam
+                    const startTime = info.event.start.toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    const endTime = info.event.end.toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    const tooltipContent = `
+                        <div class="tooltip-inner">
+                            <div><strong>Nama:</strong> ${info.event.extendedProps.description}</div>
+                            <div><strong>Jadwal:</strong> ${startTime} - ${endTime}</div>
+                        </div>
+                    `;
+
+                    // Tooltip dengan format konten baru dan menggunakan Bootstrap
                     $(info.el).tooltip({
-                        title: info.event.extendedProps.description,
+                        title: tooltipContent,
                         placement: 'top',
                         trigger: 'hover',
-                        container: 'body'
+                        container: 'body',
+                        html: true // Mengizinkan HTML dalam tooltip
                     });
                 },
                 locale: 'id',
