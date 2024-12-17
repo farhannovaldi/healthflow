@@ -71,10 +71,15 @@
                     </li>
                 </ul>
             </div>
-            <a href="{{ route('logout') }}"
-                class="flex items-center justify-center py-2 px-4 rounded bg-red-500 hover:bg-red-600 transition-colors mt-4">
-                <i class="fas fa-sign-out-alt mr-2"></i> Logout
-            </a>
+            <form method="POST" action="{{ route('logout') }}" class="mt-4">
+                @csrf
+                <button type="submit"
+                    class="flex items-center justify-center w-full py-2 px-4 rounded bg-red-500 hover:bg-red-600 transition-colors text-white">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </button>
+            </form>
+
+
         </div>
         <!-- Main Content -->
         <div class="w-3/4 p-8 bg-gradient-to-b from-indigo-100 to-blue-50 shadow-lg rounded-lg">

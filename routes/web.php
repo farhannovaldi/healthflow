@@ -25,19 +25,21 @@ Route::get('/jadwaldokter/getJadwal', [JadwalDokterController::class, 'getJadwal
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Rute untuk dashboard yang dilindungi oleh middleware auth
-Route::middleware('auth')->get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-// Rute untuk resource Dokter
-Route::resource('dokter', DokterController::class);
+    // Data Pasien
+    Route::resource('pasien', PasienController::class);
 
-// Rute untuk resource Obat
-Route::resource('obat', ObatController::class);
+    // Data Dokter
+    Route::resource('dokter', DokterController::class);
 
-// Rute untuk resource Jadwal Dokter
-Route::resource('jadwaldokter', JadwaldokterController::class);
+    // Jadwal Dokter
+    Route::resource('jadwaldokter', JadwaldokterController::class);
 
-// Rute untuk resource Pasien
-Route::resource('pasien', PasienController::class);
+    // Data Obat
+    Route::resource('obat', ObatController::class);
 
-// Rute untuk resource Pasienvisit
-Route::resource('pasienvisit', PasienvisitController::class);
+    // History Pasien
+    Route::resource('pasienvisit', PasienvisitController::class);
+});

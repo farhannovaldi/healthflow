@@ -8,7 +8,7 @@
         <!-- Dashboard Overview -->
         <div class="bg-gradient-to-b from-white to-indigo-50 p-6 rounded-lg shadow hover:shadow-2xl transition-shadow duration-300 transform hover:scale-105">
             <h3 class="text-xl font-semibold text-indigo-800 mb-2">Dashboard Medis Anda</h3>
-            <p class="text-gray-600">Selamat datang di dashboard! Di sini Anda dapat melihat aktivitas medis terbaru dan mengelola data pasien, dokter, resep obat, dan jadwal dokter.</p>
+            <p class="text-gray-600">Selamat datang, <strong>{{ Auth::user()->name }}</strong>! Di sini Anda dapat melihat aktivitas medis terbaru dan mengelola data pasien, dokter, resep obat, dan jadwal dokter.</p>
         </div>
 
         <!-- Recent Activity -->
