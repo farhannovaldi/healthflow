@@ -79,9 +79,15 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('jadwaldokter.index') }}"
+                        <a href="{{ route('jadwaldokter.getAllJadwalDokter') }}"
                             class="flex items-center py-2 px-4 rounded hover:bg-indigo-600 transition-colors {{ request()->is('jadwaldokter*') ? 'bg-indigo-600' : '' }}">
                             <i class="fas fa-calendar-alt mr-3"></i> Jadwal Dokter
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('jadwaldokter.index') }}"
+                            class="flex items-center py-2 px-4 rounded hover:bg-indigo-600 transition-colors {{ request()->is('jadwaldokter*') ? 'bg-indigo-600' : '' }}">
+                            <i class="fas fa-calendar-alt mr-3"></i> Kelola Jadwal Dokter
                         </a>
                     </li>
                     <li>

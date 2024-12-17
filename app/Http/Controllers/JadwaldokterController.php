@@ -12,11 +12,18 @@ class JadwalDokterController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function getAllJadwalDokter()
     {
         $dokter = Dokter::all();
 
-        return view('jadwaldokter.index', compact('dokter'));
+        return view('jadwaldokter.getAllJadwalDokter', compact('dokter'));
+    }
+
+    public function index()
+    {
+        $jadwalDokter = JadwalDokter::all();
+
+        return view('jadwaldokter.index', compact('jadwalDokter'));
     }
 
     /**
