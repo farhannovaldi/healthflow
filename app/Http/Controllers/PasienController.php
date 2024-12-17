@@ -76,7 +76,7 @@ class PasienController extends Controller
         Pasien::create($validatedData);
 
         // Redirect dengan pesan sukses
-        return redirect()->route('pasien.index')->with('success', 'Pasien berhasil ditambahkan.');
+        return response()->json(['message' => 'Data dokter berhasil ditambahkan!']);
     }
 
     /**
@@ -120,8 +120,8 @@ class PasienController extends Controller
         $pasien = Pasien::findOrFail($id);
         $pasien->update($validatedData);
 
-        // Redirect dengan pesan sukses
-        return redirect()->route('pasien.index')->with('success', 'Data pasien berhasil diperbarui.');
+
+        return response()->json(['message' => 'Data pasien berhasil diperbarui!']);
     }
 
     /**
@@ -129,11 +129,16 @@ class PasienController extends Controller
      */
     public function destroy(string $id)
     {
-        // Hapus data pasien
-        $pasien = Pasien::findOrFail($id);
-        $pasien->delete();
+        try {
+            // Hapus data Dokter
+            $pasien = Pasien::findOrFail($id);
+            $pasien->delete();
 
-        // Redirect dengan pesan sukses
-        return redirect()->route('pasien.index')->with('success', 'Pasien berhasil dihapus.');
+            // Respons dalam format JSON jika request datang dari AJAX
+            return response()->json(['success' => true, 'message' => 'Data pasien berhasil dihapus.']);
+        } catch (\Exception $e) {
+            // Respons jika terjadi kesalahan
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus data.']);
+        }
     }
 }
