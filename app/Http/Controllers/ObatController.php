@@ -78,8 +78,7 @@ class ObatController extends Controller
         // Simpan data ke database
         Obat::create($validatedData);
 
-        // Redirect dengan pesan sukses
-        return redirect()->route('obat.index')->with('success', 'Obat berhasil ditambahkan.');
+        return response()->json(['message' => 'Data obat berhasil ditambahkan!']);
     }
 
     /**
@@ -125,7 +124,7 @@ class ObatController extends Controller
         $obat->update($validatedData);
 
         // Redirect dengan pesan sukses
-        return redirect()->route('obat.index')->with('success', 'Data obat berhasil diperbarui.');
+        return response()->json(['message' => 'Data obat berhasil diperbarui!']);
     }
 
     /**
@@ -133,11 +132,16 @@ class ObatController extends Controller
      */
     public function destroy(string $id)
     {
-        // Hapus data obat
-        $obat = Obat::findOrFail($id);
-        $obat->delete();
+        try {
+            // Hapus data
+            $obat = Obat::findOrFail($id);
+            $obat->delete();
 
-        // Redirect dengan pesan sukses
-        return redirect()->route('obat.index')->with('success', 'Obat berhasil dihapus.');
+            // Respons dalam format JSON jika request datang dari AJAX
+            return response()->json(['success' => true, 'message' => 'Data obat berhasil dihapus.']);
+        } catch (\Exception $e) {
+            // Respons jika terjadi kesalahan
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus data.']);
+        }
     }
 }
