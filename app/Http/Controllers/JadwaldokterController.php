@@ -14,47 +14,6 @@ class JadwalDokterController extends Controller
     public function index(Request $request)
     {
         $dokter = Dokter::all();
-        if ($request->ajax()) {
-            $query = JadwalDokter::with('dokter');
-
-            // Pencarian
-            if (!empty($request->search['value'])) {
-                $search = $request->search['value'];
-                $query->whereHas('dokter', function ($q) use ($search) {
-                    $q->where('nama', 'like', "%$search%")
-                        ->orWhere('spesialis', 'like', "%$search%")
-                        ->orWhere('telepon', 'like', "%$search%");
-                });
-            }
-
-            // Total data sebelum filter
-            $totalData = JadwalDokter::count();
-
-            // Pagination dan sorting
-            $start = $request->start ?? 0;
-            $length = $request->length ?? 10;
-            $columnIndex = $request->order[0]['column'] ?? 0;
-            $columnName = $request->columns[$columnIndex]['data'] ?? 'id';
-            $columnSortOrder = $request->order[0]['dir'] ?? 'asc';
-
-            // Fallback jika kolom tidak valid
-            if (!in_array($columnName, ['id', 'hari', 'jam_mulai', 'jam_selesai'])) {
-                $columnName = 'id';
-            }
-
-            $data = $query
-                ->orderBy($columnName, $columnSortOrder)
-                ->skip($start)
-                ->take($length)
-                ->get();
-
-            return response()->json([
-                'draw' => $request->draw,
-                'recordsTotal' => $totalData,
-                'recordsFiltered' => $query->count(),
-                'data' => $data
-            ]);
-        }
 
         return view('jadwaldokter.index', compact('dokter'));
     }
@@ -97,23 +56,34 @@ class JadwalDokterController extends Controller
         $jadwalDokter = JadwalDokter::with('dokter')->findOrFail($id);
         return view('jadwaldokter.show', compact('jadwalDokter'));
     }
+    
     public function getJadwal()
     {
-        // Mengambil jadwal dokter beserta informasi dokter yang terkait
-        $jadwalDokter = JadwalDokter::with('dokter')->get();
+        // Mapping nama hari ke tanggal (untuk contoh minggu ini)
+        $hariMap = [
+            'Senin' => now()->startOfWeek()->toDateString(),
+            'Selasa' => now()->startOfWeek()->addDay(1)->toDateString(),
+            'Rabu' => now()->startOfWeek()->addDay(2)->toDateString(),
+            'Kamis' => now()->startOfWeek()->addDay(3)->toDateString(),
+            'Jumat' => now()->startOfWeek()->addDay(4)->toDateString(),
+            'Sabtu' => now()->startOfWeek()->addDay(5)->toDateString(),
+            'Minggu' => now()->startOfWeek()->addDay(6)->toDateString(),
+        ];
 
-        // Mengonversi data ke format yang diinginkan oleh FullCalendar
-        $events = $jadwalDokter->map(function ($jadwal) {
+        $jadwal = JadwalDokter::with('dokter')->get();
+
+        $response = $jadwal->map(function ($item) use ($hariMap) {
+            $tanggal = $hariMap[$item->hari] ?? now()->toDateString(); // Pastikan tanggal sesuai hari
+
             return [
-                'title' => $jadwal->dokter->nama . ' - ' . $jadwal->hari,
-                'start' => $jadwal->jam_mulai,
-                'end' => $jadwal->jam_selesai,
-                'description' => 'Dokter: ' . $jadwal->dokter->nama . '\n' . 'Hari: ' . $jadwal->hari
+                'title' => $item->dokter->nama . ' (' . $item->jam_mulai . '-' . $item->jam_selesai . ')',
+                'start' => $tanggal . 'T' . $item->jam_mulai,
+                'end' => $tanggal . 'T' . $item->jam_selesai,
+                'description' => "Dokter: {$item->dokter->nama}\nHari: {$item->hari}\nJam: {$item->jam_mulai} - {$item->jam_selesai}",
             ];
         });
 
-        // Mengembalikan data dalam format JSON
-        return response()->json($events);
+        return response()->json($response);
     }
 
 
