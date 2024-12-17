@@ -58,27 +58,6 @@ class DokterController extends Controller
         // Tampilkan form untuk menambahkan Dokter baru
         return view('dokter.create');
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        // Validasi data input
-        $validatedData = $request->validate([
-            'nama' => 'required|string|max:255',
-            'spesialis' => 'required|string|max:255',
-            'telepon' => 'required|string|max:15',
-            'email' => 'required|string',
-        ]);
-
-        // Simpan data ke database
-        Dokter::create($validatedData);
-
-        // Redirect dengan pesan sukses
-        return redirect()->route('dokter.index')->with('success', 'Dokter berhasil ditambahkan.');
-    }
-
     /**
      * Display the specified resource.
      */
@@ -106,22 +85,33 @@ class DokterController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function store(Request $request)
     {
-        // Validasi data input
-        $validatedData = $request->validate([
+        $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'spesialis' => 'required|string|max:255',
             'telepon' => 'required|string|max:15',
-            'email' => 'required|string',
+            'email' => 'required|email|max:255',
         ]);
 
-        // Cari data Dokter dan perbarui
-        $Dokter = Dokter::findOrFail($id);
-        $Dokter->update($validatedData);
+        Dokter::create($validated);
 
-        // Redirect dengan pesan sukses
-        return redirect()->route('dokter.index')->with('success', 'Data Dokter berhasil diperbarui.');
+        return response()->json(['message' => 'Data dokter berhasil ditambahkan!']);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'spesialis' => 'required|string|max:255',
+            'telepon' => 'required|string|max:15',
+            'email' => 'required|email|max:255',
+        ]);
+
+        $dokter = Dokter::findOrFail($id);
+        $dokter->update($validated);
+
+        return response()->json(['message' => 'Data dokter berhasil diperbarui!']);
     }
 
     /**

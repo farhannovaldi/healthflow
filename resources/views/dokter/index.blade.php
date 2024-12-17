@@ -37,6 +37,8 @@
                 <form id="dokterForm">
                     @csrf
                     <input type="hidden" id="dokterId" name="id">
+                    <input type="hidden" id="_method" name="_method" value="POST"> <!-- Untuk PUT Method -->
+
                     <div class="mb-4">
                         <label for="nama" class="block text-gray-700">Nama</label>
                         <input type="text" id="nama" name="nama" class="form-input mt-1 block w-full border-2 rounded-md p-2" required>
@@ -68,11 +70,13 @@
         const modalTitle = document.getElementById('modalTitle');
         const dokterForm = document.getElementById('dokterForm');
         const dokterIdInput = document.getElementById('dokterId');
+        const methodInput = document.getElementById('_method');
 
         // Open Modal for Adding
         openModalButton.addEventListener('click', () => {
             dokterForm.reset();
             dokterIdInput.value = '';
+            methodInput.value = 'POST';
             modalTitle.textContent = 'Tambah Dokter';
             modal.classList.remove('hidden');
         });
@@ -112,6 +116,7 @@
             $('#dokterTable').on('click', '.editButton', function() {
                 const dokter = $(this).data();
                 dokterIdInput.value = dokter.id;
+                methodInput.value = 'PUT';
                 $('#nama').val(dokter.nama);
                 $('#spesialis').val(dokter.spesialis);
                 $('#telepon').val(dokter.telepon);
@@ -127,18 +132,23 @@
 
                 const id = dokterIdInput.value;
                 const url = id ? `/dokter/${id}` : "{{ route('dokter.store') }}";
-                const method = id ? 'PUT' : 'POST';
-
                 $.ajax({
                     url: url,
-                    method: method,
+                    method: 'POST', // Always POST, PUT is handled via _method
                     data: $(this).serialize(),
-                    success: () => {
+                    success: (response) => {
                         modal.classList.add('hidden');
                         table.ajax.reload();
-                        alert('Data berhasil disimpan!');
+                        alert(response.message || 'Data berhasil disimpan!');
                     },
-                    error: () => alert('Terjadi kesalahan, silakan coba lagi.')
+                    error: (xhr) => {
+                        const errors = xhr.responseJSON?.errors;
+                        let message = 'Terjadi kesalahan:\n';
+                        if (errors) {
+                            message += Object.values(errors).map(err => `- ${err}`).join('\n');
+                        }
+                        alert(message);
+                    }
                 });
             });
         });
