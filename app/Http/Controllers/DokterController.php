@@ -119,11 +119,17 @@ class DokterController extends Controller
      */
     public function destroy(string $id)
     {
-        // Hapus data Dokter
-        $Dokter = Dokter::findOrFail($id);
-        $Dokter->delete();
+        try {
+            // Hapus data Dokter
+            $dokter = Dokter::findOrFail($id);
+            $dokter->delete();
 
-        // Redirect dengan pesan sukses
-        return redirect()->route('dokter.index')->with('success', 'Dokter berhasil dihapus.');
+            // Respons dalam format JSON jika request datang dari AJAX
+            return response()->json(['success' => true, 'message' => 'Data dokter berhasil dihapus.']);
+        } catch (\Exception $e) {
+            // Respons jika terjadi kesalahan
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus data.']);
+        }
     }
+
 }

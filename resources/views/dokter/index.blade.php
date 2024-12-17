@@ -63,6 +63,7 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const modal = document.getElementById('dokterModal');
         const openModalButton = document.getElementById('openModalButton');
@@ -103,10 +104,9 @@
                             <button class="editButton bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
                                 data-id="${data.id}" data-nama="${data.nama}" data-spesialis="${data.spesialis}"
                                 data-telepon="${data.telepon}" data-email="${data.email}">Edit</button>
-                            <form action="/dokter/${data.id}" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus?')">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Hapus</button>
-                            </form>`
+                            <button class="deleteButton bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                                data-id="${data.id}">Hapus</button>
+                        `
                     }
                 ],
                 language: { url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json" }
@@ -134,12 +134,17 @@
                 const url = id ? `/dokter/${id}` : "{{ route('dokter.store') }}";
                 $.ajax({
                     url: url,
-                    method: 'POST', // Always POST, PUT is handled via _method
+                    method: 'POST',
                     data: $(this).serialize(),
                     success: (response) => {
                         modal.classList.add('hidden');
                         table.ajax.reload();
-                        alert(response.message || 'Data berhasil disimpan!');
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: response.message || 'Data berhasil disimpan!',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
                     },
                     error: (xhr) => {
                         const errors = xhr.responseJSON?.errors;
@@ -147,7 +152,42 @@
                         if (errors) {
                             message += Object.values(errors).map(err => `- ${err}`).join('\n');
                         }
-                        alert(message);
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            });
+
+            // Handle Delete Button Click
+            $('#dokterTable').on('click', '.deleteButton', function() {
+                const id = $(this).data('id');
+                Swal.fire({
+                    title: 'Hapus Data?',
+                    text: "Data akan dihapus secara permanen!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/dokter/${id}`,
+                            method: 'DELETE',
+                            data: { _token: "{{ csrf_token() }}" },
+                            success: (response) => {
+                                table.ajax.reload();
+                                Swal.fire('Deleted!', response.message || 'Data berhasil dihapus.', 'success');
+                            },
+                            error: () => {
+                                Swal.fire('Gagal!', 'Terjadi kesalahan saat menghapus data.', 'error');
+                            }
+                        });
                     }
                 });
             });
