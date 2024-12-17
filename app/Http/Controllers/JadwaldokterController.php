@@ -12,18 +12,52 @@ class JadwalDokterController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function getAllJadwalDokter()
+    public function getAllJadwal()
     {
         $dokter = Dokter::all();
 
         return view('jadwaldokter.getAllJadwalDokter', compact('dokter'));
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $jadwalDokter = JadwalDokter::all();
+        if ($request->ajax()) {
+            $query = Dokter::query(); // Menggunakan model Eloquent
 
-        return view('jadwaldokter.index', compact('jadwalDokter'));
+            // Pencarian
+            if (!empty($request->search['value'])) {
+                $search = $request->search['value'];
+                $query->where('nama', 'like', "%$search%")
+                    ->orWhere('spesialis', 'like', "%$search%")
+                    ->orWhere('telepon', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%");
+            }
+
+            // Total data sebelum filter
+            $totalData = Dokter::count();
+
+            // Pagination dan sorting
+            $start = $request->start ?? 0;
+            $length = $request->length ?? 10;
+            $columnIndex = $request->order[0]['column'] ?? 0; // Index kolom untuk sorting
+            $columnName = $request->columns[$columnIndex]['data'] ?? 'id'; // Nama kolom untuk sorting
+            $columnSortOrder = $request->order[0]['dir'] ?? 'asc'; // Urutan sorting
+
+            $data = $query
+                ->orderBy($columnName, $columnSortOrder)
+                ->skip($start)
+                ->take($length)
+                ->get();
+
+            return response()->json([
+                'draw' => $request->draw,
+                'recordsTotal' => $totalData,
+                'recordsFiltered' => $query->count(),
+                'data' => $data
+            ]);
+        }
+
+        return view('dokter.index');
     }
 
     /**

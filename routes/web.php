@@ -36,7 +36,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Jadwal Dokter
     Route::get('/jadwaldokter/getJadwal', [JadwalDokterController::class, 'getJadwal'])->name('jadwaldokter.getJadwal');
-    Route::get('/getAllJadwalDokter', [JadwalDokterController::class, 'getAllJadwalDokter'])->name('jadwaldokter.getAllJadwalDokter');
+    Route::get('/getAllJadwal', [JadwalDokterController::class, 'getAllJadwal'])->name('jadwaldokter.getAllJadwal');
     Route::resource('jadwaldokter', JadwaldokterController::class);
 
     // Data Obat
