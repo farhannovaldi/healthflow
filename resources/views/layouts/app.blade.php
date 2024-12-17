@@ -29,7 +29,8 @@
 
     <div class="flex min-h-screen">
         <!-- Sidebar -->
-        <div class="w-1/4 bg-gradient-to-b from-blue-900 to-indigo-700 p-6 text-white flex flex-col justify-between shadow-lg">
+        <div
+            class="w-1/4 bg-gradient-to-b from-blue-900 to-indigo-700 p-6 text-white flex flex-col justify-between shadow-lg">
             <div>
                 <h2 class="text-3xl font-bold text-center mb-8">
                     <a href="{{ route('dashboard') }}" class="hover:underline text-white-600">
@@ -77,10 +78,16 @@
         </div>
         <!-- Main Content -->
         <div class="w-3/4 p-8 bg-gradient-to-b from-indigo-100 to-blue-50 shadow-lg rounded-lg">
-            <h1 class="text-3xl font-bold text-indigo-700 mb-8 border-b-2 border-indigo-300 pb-4">@yield('title') - HealthFlow</h1>
+            <h1 class="text-3xl font-bold text-indigo-700 mb-8 border-b-2 border-indigo-300 pb-4">@yield('title') -
+                HealthFlow</h1>
             @yield('content')
         </div>
     </div>
+
+    <!-- Popper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     @stack('scripts')
 

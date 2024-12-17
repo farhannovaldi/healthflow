@@ -21,9 +21,9 @@ class Dokter extends Model
     ];
 
     public function jadwalDokter()
-    {
-        return $this->hasMany(Jadwaldokter::class, 'dokter_id');
-    }
+{
+    return $this->hasMany(JadwalDokter::class, 'doctor_id');
+}
 
 
     public function kunjunganPasien()
