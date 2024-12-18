@@ -58,8 +58,9 @@ class JadwalDokterController extends Controller
                 'data' => $data
             ]);
         }
+        $dokter = Dokter::all();
 
-        return view('jadwaldokter.index');
+        return view('jadwaldokter.index', compact('dokter'));
     }
 
     /**
@@ -77,20 +78,25 @@ class JadwalDokterController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi data
-        $validatedData = $request->validate([
+        $request->validate([
             'dokter_id' => 'required|exists:dokter,id',
-            'hari' => 'required|string|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
-            'jam_mulai' => 'required|date_format:H:i:s',
-            'jam_selesai' => 'required|date_format:H:i:s|after:jam_mulai',
+            'hari' => 'required|string|max:255',
+            'jam_mulai' => 'required|date_format:H:i',
+            'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
         ]);
 
-        // Menyimpan jadwal dokter
-        $jadwal = JadwalDokter::create($validatedData);
+        JadwalDokter::create([
+            'doctor_id' => $request->dokter_id,
+            'hari' => $request->hari,
+            'jam_mulai' => $request->jam_mulai,
+            'jam_selesai' => $request->jam_selesai,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
 
-        // Mengembalikan data jadwal dalam format JSON
-        return response()->json($jadwal, 201);
+        return response()->json(['message' => 'Jadwal dokter berhasil ditambahkan!'], 201);
     }
+
 
     /**
      * Display the specified resource.
@@ -172,19 +178,26 @@ class JadwalDokterController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
+        $jadwal = JadwalDokter::findOrFail($id);
+
+        $request->validate([
             'dokter_id' => 'required|exists:dokter,id',
-            'hari' => 'required|string|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
-            'jam_mulai' => 'required|date_format:H:i:s',
-            'jam_selesai' => 'required|date_format:H:i:s|after:jam_mulai',
+            'hari' => 'required|string|max:255',
+            'jam_mulai' => 'required|date_format:H:i',
+            'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
         ]);
 
-        $jadwalDokter = JadwalDokter::findOrFail($id);
-        $jadwalDokter->update($validatedData);
+        $jadwal->update([
+            'doctor_id' => $request->dokter_id,
+            'hari' => $request->hari,
+            'jam_mulai' => $request->jam_mulai,
+            'jam_selesai' => $request->jam_selesai,
+            'updated_at' => Carbon::now(),
+        ]);
 
-        return redirect()->route('jadwaldokter.index')->with('success', 'Jadwal dokter berhasil diperbarui.');
+        return response()->json(['message' => 'Jadwal dokter berhasil diperbarui!']);
     }
 
     /**
@@ -192,9 +205,16 @@ class JadwalDokterController extends Controller
      */
     public function destroy(string $id)
     {
-        $jadwalDokter = JadwalDokter::findOrFail($id);
-        $jadwalDokter->delete();
+        try {
+            // Hapus data Dokter
+            $jadwalDokter = JadwalDokter::findOrFail($id);
+            $jadwalDokter->delete();
 
-        return redirect()->route('jadwaldokter.index')->with('success', 'Jadwal dokter berhasil dihapus.');
+            // Respons dalam format JSON jika request datang dari AJAX
+            return response()->json(['success' => true, 'message' => 'Data dokter berhasil dihapus.']);
+        } catch (\Exception $e) {
+            // Respons jika terjadi kesalahan
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus data.']);
+        }
     }
 }

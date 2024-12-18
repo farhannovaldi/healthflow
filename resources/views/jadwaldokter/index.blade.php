@@ -15,8 +15,6 @@
                     <th class="border px-4 py-2">ID</th>
                     <th class="border px-4 py-2">Nama</th>
                     <th class="border px-4 py-2">Spesialis</th>
-                    <th class="border px-4 py-2">Telepon</th>
-                    <th class="border px-4 py-2">Email</th>
                     <th class="border px-4 py-2">Hari</th>
                     <th class="border px-4 py-2">Jam Mulai</th>
                     <th class="border px-4 py-2">Jam Selesai</th>
@@ -39,27 +37,32 @@
             <div class="modal-body">
                 <form id="dokterForm">
                     @csrf
-                    <input type="hidden" id="dokterId" name="id">
+                    <input type="hidden" id="id" name="id">
                     <input type="hidden" id="_method" name="_method" value="POST"> <!-- Untuk PUT Method -->
 
                     <div class="mb-4">
-                        <label for="nama" class="block text-gray-700">Nama</label>
-                        <input type="text" id="nama" name="nama"
+                        <label for="dokter_id" class="block text-gray-700">Nama Dokter</label>
+                        <select id="dokter_id" name="dokter_id"
+                            class="form-select mt-1 block w-full border-2 rounded-md p-2" required>
+                            <option value="" disabled selected>Pilih Dokter</option>
+                            @foreach ($dokter as $data)
+                                <option value="{{ $data->id }}">{{ $data->nama }} - {{ $data->spesialis }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="hari" class="block text-gray-700">Hari</label>
+                        <input type="text" id="hari" name="hari"
                             class="form-input mt-1 block w-full border-2 rounded-md p-2" required>
                     </div>
                     <div class="mb-4">
-                        <label for="spesialis" class="block text-gray-700">Spesialis</label>
-                        <input type="text" id="spesialis" name="spesialis"
+                        <label for="jam_mulai" class="block text-gray-700">Jam Mulai</label>
+                        <input type="time" id="jam_mulai" name="jam_mulai"
                             class="form-input mt-1 block w-full border-2 rounded-md p-2" required>
                     </div>
                     <div class="mb-4">
-                        <label for="telepon" class="block text-gray-700">Telepon</label>
-                        <input type="text" id="telepon" name="telepon"
-                            class="form-input mt-1 block w-full border-2 rounded-md p-2" required>
-                    </div>
-                    <div class="mb-4">
-                        <label for="email" class="block text-gray-700">Email</label>
-                        <input type="email" id="email" name="email"
+                        <label for="jam_selesai" class="block text-gray-700">Jam Selesai</label>
+                        <input type="time" id="jam_selesai" name="jam_selesai"
                             class="form-input mt-1 block w-full border-2 rounded-md p-2" required>
                     </div>
                     <button type="submit"
@@ -78,7 +81,7 @@
         const closeModalButton = document.getElementById('closeModalButton');
         const modalTitle = document.getElementById('modalTitle');
         const dokterForm = document.getElementById('dokterForm');
-        const dokterIdInput = document.getElementById('dokterId');
+        const dokterIdInput = document.getElementById('id');
         const methodInput = document.getElementById('_method');
 
         // Open Modal for Adding
@@ -115,14 +118,6 @@
                         name: 'spesialis'
                     },
                     {
-                        data: 'telepon',
-                        name: 'telepon'
-                    },
-                    {
-                        data: 'email',
-                        name: 'email'
-                    },
-                    {
                         data: 'hari',
                         name: 'hari'
                     },
@@ -141,8 +136,8 @@
                         searchable: false,
                         render: (data) => `
                             <button class="editButton bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
-                                data-id="${data.id}" data-nama="${data.nama}" data-spesialis="${data.spesialis}"
-                                data-telepon="${data.telepon}" data-email="${data.email}">Edit</button>
+                                data-id="${data.id}" data-nama="${data.nama}"
+                                data-hari="${data.hari}" data-jam_mulai="${data.jam_mulai}"data-jam_selesai="${data.jam_selesai}">Edit</button>
                             <button class="deleteButton bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                                 data-id="${data.id}">Hapus</button>
                         `
@@ -159,9 +154,9 @@
                 dokterIdInput.value = dokter.id;
                 methodInput.value = 'PUT';
                 $('#nama').val(dokter.nama);
-                $('#spesialis').val(dokter.spesialis);
-                $('#telepon').val(dokter.telepon);
-                $('#email').val(dokter.email);
+                $('#hari').val(dokter.hari);
+                $('#jam_mulai').val(dokter.jam_mulai);
+                $('#jam_selesai').val(dokter.jam_selesai);
 
                 modalTitle.textContent = 'Edit Dokter';
                 modal.classList.remove('hidden');
@@ -172,27 +167,27 @@
                 e.preventDefault();
 
                 const id = dokterIdInput.value;
-                const url = id ? `/dokter/${id}` : "{{ route('dokter.store') }}";
+                const url = id ? `/jadwaldokter/${id}` : "{{ route('jadwaldokter.store') }}";
+                const method = id ? 'PUT' : 'POST';
+
                 $.ajax({
                     url: url,
-                    method: 'POST',
+                    method: method,
                     data: $(this).serialize(),
                     success: (response) => {
                         modal.classList.add('hidden');
                         table.ajax.reload();
                         Swal.fire({
                             title: 'Berhasil!',
-                            text: response.message || 'Data berhasil disimpan!',
+                            text: response.message,
                             icon: 'success',
                             confirmButtonText: 'OK'
                         });
                     },
                     error: (xhr) => {
-                        const errors = xhr.responseJSON?.errors;
+                        const errors = xhr.responseJSON?.errors || {};
                         let message = 'Terjadi kesalahan:\n';
-                        if (errors) {
-                            message += Object.values(errors).map(err => `- ${err}`).join('\n');
-                        }
+                        message += Object.values(errors).map(err => `- ${err}`).join('\n');
                         Swal.fire({
                             title: 'Gagal!',
                             text: message,
@@ -204,8 +199,9 @@
             });
 
             // Handle Delete Button Click
+            // Handle Delete Button Click
             $('#dokterTable').on('click', '.deleteButton', function() {
-                const id = $(this).data('id');
+                const id = $(this).data('id'); // Pastikan ID ini berasal dari data tabel
                 Swal.fire({
                     title: 'Hapus Data?',
                     text: "Data akan dihapus secara permanen!",
@@ -218,10 +214,10 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: `/dokter/${id}`,
+                            url: `/jadwaldokter/${id}`, // Endpoint dengan ID jadwal_dokter
                             method: 'DELETE',
                             data: {
-                                _token: "{{ csrf_token() }}"
+                                _token: "{{ csrf_token() }}" // CSRF Token Laravel
                             },
                             success: (response) => {
                                 table.ajax.reload();
@@ -233,10 +229,11 @@
                                     confirmButtonText: 'OK'
                                 });
                             },
-                            error: () => {
+                            error: (xhr) => {
                                 Swal.fire({
                                     title: 'Gagal!',
-                                    text: 'Terjadi kesalahan saat menghapus data.',
+                                    text: xhr.responseJSON?.message ||
+                                        'Terjadi kesalahan saat menghapus data.',
                                     icon: 'error',
                                     confirmButtonText: 'OK'
                                 });
@@ -245,6 +242,7 @@
                     }
                 });
             });
+
         });
     </script>
 @endpush
