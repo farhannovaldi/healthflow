@@ -22,19 +22,21 @@ class JadwalDokterController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = Dokter::query(); // Menggunakan model Eloquent
+            // Query dengan join untuk mengambil data dari tabel dokter
+            $query = JadwalDokter::join('dokter', 'dokter.id', '=', 'jadwal_dokter.doctor_id')
+                ->select('jadwal_dokter.*', 'dokter.nama', 'dokter.spesialis', 'dokter.telepon', 'dokter.email');
 
             // Pencarian
             if (!empty($request->search['value'])) {
                 $search = $request->search['value'];
                 $query->where('nama', 'like', "%$search%")
-                    ->orWhere('spesialis', 'like', "%$search%")
-                    ->orWhere('telepon', 'like', "%$search%")
-                    ->orWhere('email', 'like', "%$search%");
+                    ->orWhere('hari', 'like', "%$search%")
+                    ->orWhere('jam_mulai', 'like', "%$search%")
+                    ->orWhere('jam_selesai', 'like', "%$search%");
             }
 
             // Total data sebelum filter
-            $totalData = Dokter::count();
+            $totalData = JadwalDokter::count();
 
             // Pagination dan sorting
             $start = $request->start ?? 0;
@@ -57,7 +59,7 @@ class JadwalDokterController extends Controller
             ]);
         }
 
-        return view('dokter.index');
+        return view('jadwaldokter.index');
     }
 
     /**
