@@ -62,7 +62,7 @@ class AuthController extends Controller
 
 
         // Redirect ke halaman login setelah registrasi
-        return redirect()->route('login.form')->with('success', 'Akun Anda telah berhasil dibuat. Silakan login.');
+        return redirect()->route('login')->with('success', 'Akun Anda telah berhasil dibuat. Silakan login.');
     }
 
 
