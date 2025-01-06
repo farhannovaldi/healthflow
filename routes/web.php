@@ -44,4 +44,5 @@ Route::middleware(['auth'])->group(function () {
 
     // History Pasien
     Route::resource('pasienvisit', PasienvisitController::class);
+
 });

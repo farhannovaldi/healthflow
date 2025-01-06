@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('pasien_visit', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->constrained('pasien')->onDelete('cascade'); // Relasi ke pasien
-            $table->foreignId('doctor_id')->constrained('dokter')->onDelete('cascade'); // Relasi ke dokter
+            $table->foreignId('pasien_id')->constrained('pasien')->onDelete('cascade'); // Relasi ke pasien
+            $table->foreignId('dokter_id')->constrained('dokter')->onDelete('cascade'); // Relasi ke dokter
             $table->date('tanggal_kunjungan'); // Tanggal kunjungan pasien
             $table->text('keluhan')->nullable(); // Keluhan pasien
             $table->text('diagnosis')->nullable(); // Diagnosis dokter
