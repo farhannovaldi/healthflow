@@ -134,8 +134,10 @@
             <div class="modal-body space-y-6 text-gray-800">
                 <form id="editPasienForm">
                     @csrf
-                    <input type="hidden" id="edit_pasien_id" name="pasien_id">
                     <input type="hidden" id="edit_kunjungan_id" name="kunjungan_id">
+                    <input type="hidden" id="edit_pasien_id" name="pasien_id">
+                    <input type="hidden" id="edit_dokter_id" name="dokter_id">
+                    <input type="text" id="edit_tanggal_kunjungan" name="tanggal_kunjungan">
 
                     <div class="mb-4">
                         <label for="edit_keluhan" class="block text-gray-700">Keluhan</label>
@@ -221,7 +223,7 @@
         <button class="deleteButton bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
             data-id="${data.id}">Hapus</button>
         <button class="detailButton bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            data-id="${data.id}">Detail</button>
+            data-id="${data.id}" data-pasien="${data.pasien_id}" data-dokter="${data.dokter_id}" data-tanggal="${data.tanggal_kunjungan}">Detail</button>
     `
                     }
 
@@ -268,74 +270,84 @@
                 });
             });
 
-            // Handle Detail Button Click
+            // Handler Tombol Detail
             $('#pasienTable').on('click', '.detailButton', function() {
-                const id = $(this).data('id');
+                const id = $(this).data('id'); // Ambil id dari tombol
 
-                // Fetch data for the selected kunjungan using AJAX
                 $.ajax({
-                    url: `/pasienvisit/${id}`, // Pastikan route ini mengarah ke route yang tepat
+                    url: `/pasienvisit/${id}`, // Panggil data dari server
                     method: 'GET',
                     success: (response) => {
-                        // Populate the modal with the fetched data
-                        $('#detailPasienNama').text(response.pasien.nama);
-                        $('#detailDokterNama').text(response.dokter.nama);
+                        // Isi modal dengan data yang diterima
+                        $('#detailPasienNama')
+                            .text(response.pasien.nama)
+                            .data('pasien-id', response.pasien.id); // Set data pasien-id
+                        $('#detailDokterNama').text(response.dokter.nama).data('dokter-id',
+                            response.dokter.id);
                         $('#detailTanggalKunjungan').text(response.tanggal_kunjungan);
                         $('#detailKeluhan').text(response.keluhan || '-');
                         $('#detailDiagnosis').text(response.diagnosis || '-');
                         $('#detailTindakan').text(response.tindakan || '-');
 
-                        // Simpan id kunjungan pada modal untuk digunakan saat edit
-                        $('#edit_kunjungan_id').val(
-                        id); // Menyimpan id kunjungan untuk digunakan di form edit
+                        // Simpan id kunjungan dan pasien untuk tombol edit
+                        $('#edit_kunjungan_id').val(response.id);
+                        $('#edit_pasien_id').val(response.pasien_id);
 
-                        // Open the modal
+                        // Buka modal detail
                         $('#detailPasienModal').removeClass('hidden');
                     },
-                    error: () => {
+                    error: (xhr) => {
+                        console.error('Error fetching data:', xhr);
                         Swal.fire('Gagal!', 'Terjadi kesalahan saat mengambil data.', 'error');
                     }
                 });
             });
 
-            // Tombol Edit di modal detail
+
             $('#editDetailButton').on('click', function() {
-                // Ambil id kunjungan dari modal detail yang sudah disimpan
+                // Ambil data dari modal detail
                 const kunjunganId = $('#edit_kunjungan_id').val();
+                const pasienId = $('#detailPasienNama').data('pasien-id'); // Ambil pasien-id
+                const dokterId = $('#detailDokterNama').data(
+                    'dokter-id'); // Ambil dari data yang di-set sebelumnya
+                const tanggalKunjungan = $('#detailTanggalKunjungan').text();
 
-                // Set nilai form edit modal
-                $('#edit_pasien_id').val($('#detailPasienNama').text()); // Ganti dengan data yang sesuai
+                // Set data untuk form edit
                 $('#edit_kunjungan_id').val(kunjunganId);
+                $('#edit_pasien_id').val(pasienId);
+                $('#edit_dokter_id').val(dokterId);
+                $('#edit_tanggal_kunjungan').val(tanggalKunjungan);
 
-                // Isi form dengan data kunjungan yang ingin diedit
                 $('#edit_keluhan').val($('#detailKeluhan').text());
                 $('#edit_diagnosis').val($('#detailDiagnosis').text());
                 $('#edit_tindakan').val($('#detailTindakan').text());
 
-                // Tampilkan modal edit detail
+                // Tampilkan modal edit
                 $('#editDetailPasienModal').removeClass('hidden');
             });
-
             // Menangani submit form edit
             $('#editPasienForm').on('submit', function(e) {
                 e.preventDefault();
-
                 const kunjunganId = $('#edit_kunjungan_id').val();
+                const formData = $(this).serialize(); // Mengambil data form yang akan dikirim
+                // Menampilkan data yang dikirim ke console
                 $.ajax({
                     url: `/pasienvisit/${kunjunganId}`,
                     method: 'PUT',
-                    data: $(this).serialize(),
+                    data: formData,
                     success: (response) => {
                         $('#editDetailPasienModal').addClass('hidden');
                         Swal.fire('Berhasil!', response.message, 'success');
                         $('#pasienTable').DataTable().ajax.reload();
                     },
                     error: (xhr) => {
+                        console.error('Error:', xhr.responseJSON); // Log error jika terjadi
                         Swal.fire('Gagal!', xhr.responseJSON?.message || 'Terjadi kesalahan.',
                             'error');
                     }
                 });
             });
+
 
             // Close Modals
             $('#closeDetailModalButton').on('click', () => {
