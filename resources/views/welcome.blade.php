@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,11 @@
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2771/2771400.png" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
     <script>
         // Smooth Scroll JavaScript
         document.addEventListener("DOMContentLoaded", function() {
@@ -24,6 +30,7 @@
         });
     </script>
 </head>
+
 <body class="font-sans antialiased bg-gradient-to-b from-indigo-100 to-blue-200">
 
     <header class="bg-gradient-to-r from-indigo-700 to-blue-800 text-white py-4 shadow-lg">
@@ -33,11 +40,13 @@
                 <a href="#about" class="hover:text-blue-300 transition-all">Tentang</a>
                 <a href="#services" class="hover:text-blue-300 transition-all">Layanan</a>
                 <a href="#contact" class="hover:text-blue-300 transition-all">Kontak</a>
-                <a href="/login" class="bg-white text-indigo-700 px-6 py-2 rounded-full font-medium hover:bg-indigo-700 hover:text-white transition-all">
+                <a href="/login"
+                    class="bg-white text-indigo-700 px-6 py-2 rounded-full font-medium hover:bg-indigo-700 hover:text-white transition-all">
                     Masuk
                 </a>
             </nav>
-            <a href="/login" class="md:hidden bg-white text-indigo-700 px-6 py-2 rounded-full font-medium hover:bg-indigo-700 hover:text-white transition-all">
+            <a href="/login"
+                class="md:hidden bg-white text-indigo-700 px-6 py-2 rounded-full font-medium hover:bg-indigo-700 hover:text-white transition-all">
                 Masuk
             </a>
         </div>
@@ -45,17 +54,39 @@
 
 
     <!-- Hero Section -->
-    <section class="flex flex-col items-center justify-center min-h-screen text-center bg-gradient-to-r from-indigo-500 to-blue-600 px-6 py-16">
-        <h2 class="text-5xl font-extrabold text-white mb-6 animate__animated animate__fadeIn">Selamat Datang di HealthFlow</h2>
-        <p class="text-xl text-white mb-8 opacity-80 animate__animated animate__fadeIn animate__delay-1s">Solusi cepat dan tepat untuk layanan kesehatan Anda. Akses riwayat pasien, jadwal dokter, dan informasi kesehatan hanya di ujung jari Anda.</p>
-        <a href="#services" class="bg-white text-blue-600 px-12 py-4 rounded-full text-xl font-semibold hover:bg-blue-600 hover:text-white transition-all">Pelajari Layanan Kami</a>
+    <section
+        class="flex flex-col items-center justify-center min-h-screen text-center bg-gradient-to-r from-indigo-500 to-blue-600 px-6 py-16">
+        <h2 class="text-5xl font-extrabold text-white mb-6 animate__animated animate__fadeIn">Selamat Datang di
+            HealthFlow</h2>
+        <p class="text-xl text-white mb-8 opacity-80 animate__animated animate__fadeIn animate__delay-1s">Solusi cepat
+            dan tepat untuk layanan kesehatan Anda. Akses riwayat pasien, jadwal dokter, dan informasi kesehatan hanya
+            di ujung jari Anda.</p>
+        <a href="#services"
+            class="bg-white text-blue-600 px-12 py-4 rounded-full text-xl font-semibold hover:bg-blue-600 hover:text-white transition-all">Pelajari
+            Layanan Kami</a>
+    </section>
+
+    <!-- Jadwal Dokter Section -->
+    <section id="jadwal-dokter" class="py-20 bg-gradient-to-b from-blue-100 to-white">
+        <div class="container mx-auto text-center">
+            <h3 class="text-3xl font-semibold text-gray-800 mb-6 transform hover:scale-105 transition duration-300">
+                Jadwal Dokter
+            </h3>
+            <div class="bg-white shadow-lg rounded-lg p-6">
+                <!-- FullCalendar Container -->
+                <div id="calendar"></div>
+            </div>
+        </div>
     </section>
 
     <!-- About Section -->
     <section id="about" class="py-20 bg-gradient-to-b from-white to-indigo-50">
         <div class="container mx-auto text-center">
-            <h3 class="text-3xl font-semibold text-gray-800 mb-6 transform hover:scale-105 transition duration-300">Tentang Kami</h3>
-            <p class="text-lg text-gray-700 max-w-2xl mx-auto transition-all">HealthFlow adalah platform yang dirancang untuk mempermudah pengelolaan data pasien, jadwal dokter, dan rekam medis. Kami menyediakan solusi digital yang efisien untuk tenaga medis dan pasien.</p>
+            <h3 class="text-3xl font-semibold text-gray-800 mb-6 transform hover:scale-105 transition duration-300">
+                Tentang Kami</h3>
+            <p class="text-lg text-gray-700 max-w-2xl mx-auto transition-all">HealthFlow adalah platform yang dirancang
+                untuk mempermudah pengelolaan data pasien, jadwal dokter, dan rekam medis. Kami menyediakan solusi
+                digital yang efisien untuk tenaga medis dan pasien.</p>
         </div>
     </section>
 
@@ -83,9 +114,13 @@
     <!-- Contact Section -->
     <section id="contact" class="py-20 bg-gradient-to-r from-indigo-50 to-blue-100">
         <div class="container mx-auto text-center">
-            <h3 class="text-3xl font-semibold text-gray-800 mb-6 transform hover:scale-105 transition duration-300">Hubungi Kami</h3>
-            <p class="text-lg text-gray-700 mb-4">Kami siap membantu Anda dengan segala pertanyaan. Hubungi kami melalui email di bawah ini.</p>
-            <a href="mailto:info@healthflow.com" class="bg-blue-600 text-white px-8 py-4 rounded-full text-xl hover:bg-blue-700 transition-all">Email Kami</a>
+            <h3 class="text-3xl font-semibold text-gray-800 mb-6 transform hover:scale-105 transition duration-300">
+                Hubungi Kami</h3>
+            <p class="text-lg text-gray-700 mb-4">Kami siap membantu Anda dengan segala pertanyaan. Hubungi kami melalui
+                email di bawah ini.</p>
+            <a href="mailto:info@healthflow.com"
+                class="bg-blue-600 text-white px-8 py-4 rounded-full text-xl hover:bg-blue-700 transition-all">Email
+                Kami</a>
         </div>
     </section>
 
@@ -96,5 +131,65 @@
         </div>
     </footer>
 
+    <script>
+        $(document).ready(function() {
+            // Initialize FullCalendar
+            var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+                initialView: 'dayGridWeek',
+                events: function(fetchInfo, successCallback, failureCallback) {
+                    $.ajax({
+                        url: '{{ route('jadwaldokter.getJadwal') }}',
+                        method: 'GET',
+                        data: {
+                            start: fetchInfo.startStr,
+                            end: fetchInfo.endStr,
+                        },
+                        success: function(response) {
+                            successCallback(response);
+                        },
+                        error: function() {
+                            console.error('Gagal mengambil data jadwal.');
+                            failureCallback();
+                        },
+                    });
+                },
+                eventDidMount: function(info) {
+                    const startTime = info.event.start.toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    });
+                    const endTime = info.event.end.toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    });
+
+                    const tooltipContent = `
+                        <div class="tooltip-inner">
+                            <div><strong>Nama:</strong> ${info.event.extendedProps.description}</div>
+                            <div><strong>Jadwal:</strong> ${startTime} - ${endTime}</div>
+                        </div>
+                    `;
+
+                    $(info.el).tooltip({
+                        title: tooltipContent,
+                        placement: 'top',
+                        trigger: 'hover',
+                        container: 'body',
+                        html: true,
+                    });
+                },
+                locale: 'id',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridWeek,dayGridMonth',
+                },
+            });
+
+            calendar.render();
+        });
+    </script>
+
 </body>
+
 </html>

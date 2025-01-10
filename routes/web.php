@@ -24,6 +24,8 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.pr
 // Rute untuk logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/jadwaldokter/getJadwal', [JadwalDokterController::class, 'getJadwal'])->name('jadwaldokter.getJadwal');
+
 // Rute untuk dashboard yang dilindungi oleh middleware auth
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -35,7 +37,6 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('dokter', DokterController::class);
 
     // Jadwal Dokter
-    Route::get('/jadwaldokter/getJadwal', [JadwalDokterController::class, 'getJadwal'])->name('jadwaldokter.getJadwal');
     Route::get('/getAllJadwal', [JadwalDokterController::class, 'getAllJadwal'])->name('jadwaldokter.getAllJadwal');
     Route::resource('jadwaldokter', JadwaldokterController::class);
 
@@ -44,5 +45,4 @@ Route::middleware(['auth'])->group(function () {
 
     // History Pasien
     Route::resource('pasienvisit', PasienvisitController::class);
-
 });
