@@ -53,6 +53,37 @@
         </div>
     </section>
 
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-gradient-to-b from-white to-indigo-50">
+        <div class="container mx-auto text-center">
+            <h3 class="text-3xl font-semibold text-gray-800 mb-6 transform hover:scale-105 transition duration-300">
+                Tentang Kami</h3>
+            <p class="text-lg text-gray-700 max-w-2xl mx-auto transition-all">HealthFlow adalah platform yang dirancang
+                untuk mempermudah pengelolaan data pasien, jadwal dokter, dan rekam medis. Kami menyediakan solusi
+                digital yang efisien untuk tenaga medis dan pasien.</p>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+        <div class="container mx-auto text-center">
+            <h3 class="text-3xl font-semibold mb-6 transform hover:scale-105 transition duration-300">Layanan Kami</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div class="bg-white text-gray-800 p-8 rounded-xl shadow-xl hover:shadow-2xl transition duration-300">
+                    <h4 class="text-2xl font-semibold mb-4">Jadwal Dokter</h4>
+                    <p>Atur dan lihat jadwal dokter klinik dengan mudah kapan saja.</p>
+                </div>
+                <div class="bg-white text-gray-800 p-8 rounded-xl shadow-xl hover:shadow-2xl transition duration-300">
+                    <h4 class="text-2xl font-semibold mb-4">Rekam Medis</h4>
+                    <p>Akses rekam medis pasien secara cepat, aman, dan mudah.</p>
+                </div>
+                <div class="bg-white text-gray-800 p-8 rounded-xl shadow-xl hover:shadow-2xl transition duration-300">
+                    <h4 class="text-2xl font-semibold mb-4">Pendataan Pasien</h4>
+                    <p> Perbarui data pasien dengan praktis.</p>
+                </div>
+            </div>
+        </div>
+    </section>
     <!-- Footer -->
     <footer class="bg-gradient-to-r from-indigo-700 to-blue-800 text-white py-6">
         <div class="container mx-auto text-center">
